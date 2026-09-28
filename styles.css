@@ -1,0 +1,24 @@
+
+/* Estilo del tablero principal */
+    .tablero {
+      display: grid;
+      grid-template-columns: repeat(8, 60px); /* 8 columnas de 60px cada una */
+      grid-template-rows: repeat(8, 60px);    /* 8 filas de 60px cada una */
+      width: fit-content;                     /* Ajusta el ancho exacto del contenido */
+      border: 4px solid #333;                 /* Borde alrededor del tablero */
+    }
+
+    /* Estilos base de cada recuadro/casilla */
+    .casilla {
+      width: 60px;
+      height: 60px;
+    }
+
+    /* Colores de los recuadros */
+    .blanca {
+      background-color: #f0d9b5;
+    }
+
+    .negra {
+      background-color: #b58863;
+    }
