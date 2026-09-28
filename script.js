@@ -1,4 +1,3 @@
-// Disposición de las piezas iniciales
 const piezasIniciales = [
   '♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜',
   '♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟',
@@ -16,8 +15,8 @@ const piezasNegras  = ['♟', '♜', '♞', '♝', '♛', '♚'];
 let turnoActual = 'blancas';
 let casillaSeleccionada = null;
 let indiceSeleccionado = null;
+let juegoTerminado = false;
 
-// Inicialización del botón
 document.getElementById('btnComenzar').addEventListener('click', function() {
   const casillas = document.querySelectorAll('.casilla');
   
@@ -27,12 +26,14 @@ document.getElementById('btnComenzar').addEventListener('click', function() {
   });
 
   this.style.display = 'none';
+  actualizarIndicadoresTurno();
 });
 
 function manejarClicCasilla(casilla, index) {
+  if (juegoTerminado) return; // Si la partida acabó, congelar movimientos
+
   const textoPieza = casilla.textContent.trim();
 
-  // SI YA HAY UNA CASILLA SELECCIONADA: Intentar mover
   if (casillaSeleccionada) {
     if (casillaSeleccionada === casilla) {
       deseleccionar();
@@ -50,15 +51,28 @@ function manejarClicCasilla(casilla, index) {
       return;
     }
 
-    // Validar si el movimiento es legal para esa pieza
     if (esMovimientoValido(piezaOrigen, indiceSeleccionado, index, textoPieza)) {
+      // Verificar si la pieza capturada es un Rey
+      if (textoPieza === '♔' || textoPieza === '♚') {
+        casilla.textContent = piezaOrigen;
+        casillaSeleccionada.textContent = '';
+        deseleccionar();
+        
+        juegoTerminado = true;
+        const ganador = turnoActual === 'blancas' ? '¡Ganan las Blancas!' : '¡Ganan las Negras!';
+        setTimeout(() => alert(`¡Fin del juego! ${ganador}`), 100);
+        return;
+      }
+
       casilla.textContent = piezaOrigen;
       casillaSeleccionada.textContent = '';
       deseleccionar();
+      
+      // Cambiar de turno y actualizar indicadores
       turnoActual = (turnoActual === 'blancas') ? 'negras' : 'blancas';
+      actualizarIndicadoresTurno();
     }
 
-  // SI NO HAY NINGUNA CASILLA SELECCIONADA: Intentar seleccionar
   } else {
     if (textoPieza !== '') {
       const esBlanca = piezasBlancas.includes(textoPieza);
@@ -68,6 +82,20 @@ function manejarClicCasilla(casilla, index) {
         seleccionar(casilla, index);
       }
     }
+  }
+}
+
+// Actualizar la apariencia de los recuadros según el turno activo
+function actualizarIndicadoresTurno() {
+  const panelBlancas = document.getElementById('turnoBlancas');
+  const panelNegras = document.getElementById('turnoNegras');
+
+  if (turnoActual === 'blancas') {
+    panelBlancas.classList.add('activo');
+    panelNegras.classList.remove('activo');
+  } else {
+    panelNegras.classList.add('activo');
+    panelBlancas.classList.remove('activo');
   }
 }
 
@@ -87,7 +115,6 @@ function deseleccionar() {
   }
 }
 
-// Muestra los puntos o bordes en las casillas permitidas
 function mostrarOpcionesMovimiento(pieza, origenIdx) {
   const casillas = document.querySelectorAll('.casilla');
   
@@ -109,7 +136,6 @@ function mostrarOpcionesMovimiento(pieza, origenIdx) {
   });
 }
 
-// Quita todos los indicadores visuales del tablero
 function limpiarMarcas() {
   const casillas = document.querySelectorAll('.casilla');
   casillas.forEach(casilla => {
@@ -117,7 +143,6 @@ function limpiarMarcas() {
   });
 }
 
-// Convertir índice lineal (0 a 63) a coordenadas (fila, columna)
 function obtenerCoordenadas(index) {
   return {
     fila: Math.floor(index / 8),
@@ -125,7 +150,6 @@ function obtenerCoordenadas(index) {
   };
 }
 
-// Verificar si el camino está libre para piezas deslizantes
 function caminoLimpio(origen, destino, dFila, dColumna) {
   const casillas = document.querySelectorAll('.casilla');
   let f = origen.fila + dFila;
@@ -142,7 +166,6 @@ function caminoLimpio(origen, destino, dFila, dColumna) {
   return true;
 }
 
-// Lógica de reglas específicas por pieza
 function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
   const orig = obtenerCoordenadas(origenIdx);
   const dest = obtenerCoordenadas(destinoIdx);
@@ -155,7 +178,6 @@ function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
   const esCaptura = piezaDestino !== '';
 
   switch (pieza) {
-    // PEÓN BLANCO
     case '♙':
       if (dc === 0 && !esCaptura) {
         if (df === -1) return true;
@@ -164,7 +186,6 @@ function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
       if (df === -1 && absDc === 1 && esCaptura) return true;
       return false;
 
-    // PEÓN NEGRO
     case '♟':
       if (dc === 0 && !esCaptura) {
         if (df === 1) return true;
@@ -173,7 +194,6 @@ function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
       if (df === 1 && absDc === 1 && esCaptura) return true;
       return false;
 
-    // TORRE
     case '♖': case '♜':
       if (df === 0 || dc === 0) {
         const stepF = df === 0 ? 0 : df / absDf;
@@ -182,11 +202,9 @@ function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
       }
       return false;
 
-    // CABALLO
     case '♘': case '♞':
       return (absDf === 2 && absDc === 1) || (absDf === 1 && absDc === 2);
 
-    // ALFIL
     case '♗': case '♝':
       if (absDf === absDc) {
         const stepF = df / absDf;
@@ -195,7 +213,6 @@ function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
       }
       return false;
 
-    // DAMA
     case '♕': case '♛':
       if (df === 0 || dc === 0 || absDf === absDc) {
         const stepF = df === 0 ? 0 : df / absDf;
@@ -204,7 +221,6 @@ function esMovimientoValido(pieza, origenIdx, destinoIdx, piezaDestino) {
       }
       return false;
 
-    // REY
     case '♔': case '♚':
       return absDf <= 1 && absDc <= 1;
 

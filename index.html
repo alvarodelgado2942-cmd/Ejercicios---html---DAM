@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajedrez online</title>
-
-    <!-- Las etiquetas link y script van DENTRO de <head> -->
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
 </head>
 
 <body>
+  <!-- Indicadores de Turno -->
+  <div class="panel-turnos">
+    <div id="turnoBlancas" class="indicador-turno activo">Jugador Blancas</div>
+    <div id="turnoNegras" class="indicador-turno">Jugador Negras</div>
+  </div>
+
   <div class="contenedor-juego">
     <div class="tablero">
       <!-- Fila 8 -->
