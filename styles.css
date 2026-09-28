@@ -55,6 +55,7 @@ body {
       align-items: center;
       font-size: 40px;
       user-select: none; /* Evita que se seleccione el texto al hacer clic */
+      cursor: pointer;
     }
 
     /* Colores de los recuadros */
@@ -65,3 +66,23 @@ body {
     .negra {
       background-color: #b58863;
     }
+
+/* Resaltado cuando una casilla está seleccionada */
+.casilla.seleccionada {
+  background-color: #f6e58d !important; /* Color amarillo de selección */
+  cursor: pointer;
+}
+/* Casilla vacía que es un movimiento válido (punto en el centro) */
+.casilla.movimiento-valido::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background-color: rgba(46, 204, 113, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Casilla con pieza enemiga que se puede capturar (anillo verde/rojo) */
+.casilla.captura-valida {
+  box-shadow: inset 0 0 0 4px #e74c3c;
+}
