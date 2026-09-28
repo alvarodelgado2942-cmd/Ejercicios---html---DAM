@@ -1,3 +1,43 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #222;
+  font-family: Arial, sans-serif;
+}
+
+/* Contenedor nuevo que pone el tablero y el botón lado a lado */
+.contenedor-juego {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Estilos para el botón */
+.btn-comenzar {
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-comenzar:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.btn-comenzar:active {
+  transform: scale(0.98);
+}
+
 
 /* Estilo del tablero principal */
     .tablero {
