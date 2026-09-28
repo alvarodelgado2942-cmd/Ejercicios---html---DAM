@@ -49,9 +49,12 @@ body {
     }
 
     /* Estilos base de cada recuadro/casilla */
-    .casilla {
-      width: 60px;
-      height: 60px;
+  .casilla {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      user-select: none; /* Evita que se seleccione el texto al hacer clic */
     }
 
     /* Colores de los recuadros */
